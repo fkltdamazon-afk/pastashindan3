@@ -1,0 +1,840 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>パスタ診断 完成版</title>
+<style>
+:root{
+  --bg:#0b0f1a;
+  --card:#111831;
+  --card2:#0f152b;
+  --text:#e9ecf5;
+  --muted:#a7b0c7;
+  --line:#243055;
+  --accent:#7c5cff;
+  --accent2:#22c55e;
+  --shadow: 0 18px 60px rgba(0,0,0,.35);
+  --radius: 18px;
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Meiryo", Arial, sans-serif;
+  background:
+    radial-gradient(900px 700px at 20% 10%, rgba(124,92,255,.26), transparent 60%),
+    radial-gradient(800px 600px at 80% 30%, rgba(34,197,94,.16), transparent 55%),
+    var(--bg);
+  color: var(--text);
+}
+
+.wrap{
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 14px 14px calc(24px + env(safe-area-inset-bottom));
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin: 8px 0 12px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+.logo{
+  width:40px;height:40px;border-radius:14px;
+  background: linear-gradient(135deg, rgba(124,92,255,.95), rgba(34,197,94,.85));
+  display:flex;align-items:center;justify-content:center;
+  box-shadow: var(--shadow);
+  font-weight: 900;
+}
+.brandText{min-width:0;}
+.brandTitle{
+  font-weight: 900;
+  letter-spacing:.02em;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.brandSub{
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.card{
+  background: linear-gradient(180deg, rgba(17,24,49,.92), rgba(15,21,43,.90));
+  border: 1px solid rgba(36,48,85,.75);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+.h1{
+  margin: 4px 0 8px;
+  font-size: 22px;
+  letter-spacing:.01em;
+}
+.lead{
+  margin: 0 0 12px;
+  color: var(--muted);
+  line-height: 1.8;
+  font-size: 14px;
+}
+
+.grid2{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 12px 0 12px;
+}
+.mini{
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 14px;
+  padding: 12px;
+}
+.miniTitle{
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+.miniValue{
+  font-size: 16px;
+  font-weight: 900;
+  margin-top: 6px;
+}
+
+.actions{
+  display:flex;
+  gap: 10px;
+  flex-wrap:wrap;
+  margin-top: 8px;
+}
+button{
+  border: 0;
+  cursor:pointer;
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-weight: 900;
+  color: var(--text);
+  transition: transform .06s ease, filter .18s ease, opacity .18s ease;
+  user-select:none;
+  -webkit-tap-highlight-color: transparent;
+}
+button:active{ transform: translateY(1px); }
+button:disabled{ opacity:.45; cursor:not-allowed; }
+
+.primary{
+  background: linear-gradient(135deg, rgba(124,92,255,.95), rgba(124,92,255,.55));
+  border: 1px solid rgba(124,92,255,.55);
+}
+.secondary{
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.10);
+}
+.ghost{
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.14);
+  color: var(--muted);
+}
+
+.tiny{
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+.progressRow{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.progressText{
+  min-width: 72px;
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 900;
+}
+.progressBar{
+  flex:1;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+  overflow:hidden;
+}
+.progressFill{
+  height:100%;
+  width:0%;
+  background: linear-gradient(90deg, rgba(124,92,255,.95), rgba(34,197,94,.85));
+  transition: width .25s ease;
+}
+
+.qArea{
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 16px;
+  padding: 14px;
+}
+.qLabel{
+  font-weight: 900;
+  letter-spacing:.06em;
+  color: rgba(124,92,255,.95);
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+.qText{
+  font-size: 16px;
+  line-height: 1.85;
+  font-weight: 800;
+}
+
+.choices{
+  margin-top: 12px;
+  display:grid;
+  gap: 10px;
+}
+
+.choice{
+  width:100%;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.10);
+  padding: 12px 14px;
+  border-radius: 16px;
+  text-align:left;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+}
+.choice:hover{ filter: brightness(1.06); }
+.choice.selected{
+  border-color: rgba(124,92,255,.75);
+  box-shadow: 0 0 0 3px rgba(124,92,255,.18);
+}
+.choice .label{
+  font-weight: 900;
+  line-height: 1.45;
+  font-size: 14px;
+}
+.choice .chip{
+  font-size: 12px;
+  color: var(--muted);
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.03);
+  min-width: 44px;
+  text-align:center;
+  font-weight: 900;
+}
+
+.nav{
+  display:flex;
+  justify-content:space-between;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.resultTop{ text-align:center; }
+.badge{
+  display:inline-flex;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(34,197,94,.10);
+  border: 1px solid rgba(34,197,94,.25);
+  color: rgba(180,255,210,.95);
+  font-weight: 900;
+  letter-spacing:.05em;
+  font-size: 12px;
+}
+.resultTitle{
+  font-size: 22px;
+  font-weight: 1000;
+  margin-top: 10px;
+  letter-spacing:.02em;
+}
+.resultSub{
+  color: var(--muted);
+  margin-top: 8px;
+  line-height: 1.8;
+  font-size: 14px;
+}
+
+.block{
+  margin-top: 14px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.06);
+  padding: 14px;
+}
+.metaRow{
+  display:grid;
+  grid-template-columns: 92px 1fr;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(255,255,255,.10);
+}
+.metaRow:last-child{ border-bottom:0; }
+.metaKey{ color: var(--muted); font-weight: 900; font-size: 12px; }
+.metaVal{ font-weight: 900; line-height: 1.6; font-size: 13.5px; }
+
+.scoreTitle{
+  font-weight: 1000;
+  margin: 0 0 10px;
+  font-size: 14px;
+}
+.bars{ display:grid; gap: 10px; }
+.barRow{
+  display:grid;
+  grid-template-columns: 88px 1fr 44px;
+  gap: 10px;
+  align-items:center;
+}
+.barName{ color: var(--muted); font-weight: 900; font-size: 12px; }
+.barTrack{
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+  overflow:hidden;
+}
+.barFill{
+  height:100%;
+  width:0%;
+  background: linear-gradient(90deg, rgba(124,92,255,.95), rgba(34,197,94,.85));
+  transition: width .45s ease;
+}
+.barVal{
+  font-weight: 1000;
+  font-size: 12px;
+  color: rgba(233,236,245,.92);
+  text-align:right;
+}
+
+.footer{
+  margin-top: 12px;
+  text-align:center;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+@media (max-width: 420px){
+  .wrap{ padding: 12px 12px calc(22px + env(safe-area-inset-bottom)); }
+  .card{ padding: 14px; }
+  .grid2{ grid-template-columns: 1fr; }
+  .qText{ font-size: 15.5px; }
+  .barRow{ grid-template-columns: 80px 1fr 40px; }
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">P</div>
+      <div class="brandText">
+        <div class="brandTitle">パスタ診断</div>
+        <div class="brandSub">質問に答えると結果が出ます</div>
+      </div>
+    </div>
+    <button id="resetBtn" class="ghost" type="button">最初から</button>
+  </header>
+
+  <section id="startView" class="card">
+    <div class="h1">あなたをパスタで例えると診断</div>
+    <p class="lead">直感で選んでOK。迷ったら真ん中寄りで。</p>
+
+    <div class="grid2">
+      <div class="mini">
+        <div class="miniTitle">所要時間</div>
+        <div class="miniValue">約1分</div>
+      </div>
+      <div class="mini">
+        <div class="miniTitle">質問数</div>
+        <div class="miniValue" id="qCount">12問</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="startBtn" class="primary" type="button">診断をはじめる</button>
+      <button id="resumeBtn" class="secondary" type="button" hidden>続きから</button>
+    </div>
+
+    <div class="tiny">結果はこの端末に一時保存されます。途中で閉じても続きから再開できます。</div>
+  </section>
+
+  <section id="quizView" class="card" hidden>
+    <div class="progressRow">
+      <div class="progressText"><span id="stepText">1 / 12</span></div>
+      <div class="progressBar" aria-label="進捗"><div id="progressFill" class="progressFill"></div></div>
+    </div>
+
+    <div class="qArea">
+      <div class="qLabel">Q<span id="qNumber">1</span></div>
+      <div id="qText" class="qText">質問文</div>
+    </div>
+
+    <div id="choices" class="choices"></div>
+
+    <div class="nav">
+      <button id="backBtn" class="ghost" type="button">戻る</button>
+      <button id="nextBtn" class="primary" type="button" disabled>次へ</button>
+    </div>
+
+    <div class="tiny">全部答えると結果が出ます</div>
+  </section>
+
+  <section id="resultView" class="card" hidden>
+    <div class="resultTop">
+      <div class="badge">診断結果</div>
+      <div class="resultTitle" id="resultTitle">結果タイトル</div>
+      <div class="resultSub" id="resultSub">結果サブ</div>
+    </div>
+
+    <div class="block" style="margin-top:14px;">
+      <div class="metaRow">
+        <div class="metaKey">キーワード</div>
+        <div class="metaVal" id="keywords">-</div>
+      </div>
+      <div class="metaRow">
+        <div class="metaKey">得意</div>
+        <div class="metaVal" id="strength">-</div>
+      </div>
+      <div class="metaRow">
+        <div class="metaKey">注意点</div>
+        <div class="metaVal" id="caution">-</div>
+      </div>
+      <div class="metaRow">
+        <div class="metaKey">ひとこと</div>
+        <div class="metaVal" id="description">-</div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="scoreTitle">あなたの味バランス</div>
+      <div class="bars" id="bars"></div>
+    </div>
+
+    <div class="actions">
+      <button id="restartBtn" class="secondary" type="button">もう一回やる</button>
+      <button id="copyBtn" class="primary" type="button">結果リンクをコピー</button>
+    </div>
+
+    <div class="tiny" id="copyHint">リンクは同じ端末内なら結果を直接表示できます</div>
+  </section>
+
+  <footer class="footer">このHTMLは単体で動作します。質問と結果は自由に編集できます。</footer>
+</main>
+
+<script>
+const STORAGE_KEY = "pasta_quiz_state_complete_v1";
+
+const AXES = [
+  { id: "rich",  name: "濃厚" },
+  { id: "light", name: "軽やか" },
+  { id: "spicy", name: "刺激" },
+  { id: "calm",  name: "安定" },
+];
+
+const QUESTIONS = [
+  { text: "頼られると断れず、つい背負いがちだ", axis: "rich" },
+  { text: "予定が詰まると一気に疲れやすい", axis: "light" },
+  { text: "思い立ったらすぐ動ける方だ", axis: "spicy" },
+  { text: "変化より安定の方が落ち着く", axis: "calm" },
+  { text: "場の空気を整える役回りが多い", axis: "calm" },
+  { text: "新しい刺激がないと飽きやすい", axis: "spicy" },
+  { text: "短期決戦より、積み上げが得意だ", axis: "calm" },
+  { text: "一度ハマると深くのめり込む", axis: "rich" },
+  { text: "人と会うほど回復することが多い", axis: "rich" },
+  { text: "一人の時間があるほど調子が上がる", axis: "light" },
+  { text: "言葉はストレートで、回りくどいのが苦手", axis: "spicy" },
+  { text: "失敗を避けるため先回りして考える", axis: "calm" },
+];
+
+const CHOICES = [
+  { label: "まったく当てはまらない", value: 1 },
+  { label: "あまり当てはまらない", value: 2 },
+  { label: "どちらでもない", value: 3 },
+  { label: "わりと当てはまる", value: 4 },
+  { label: "かなり当てはまる", value: 5 },
+];
+
+const RESULTS = [
+  {
+    id: "carbonara",
+    title: "カルボナーラタイプ",
+    sub: "濃厚で面倒見が良い。頼られたら最後までやり切る",
+    primaryAxis: "rich",
+    secondaryAxis: "calm",
+    keywords: "包容力, 面倒見, 熱量",
+    strength: "場をまとめる, 最後までやり切る",
+    caution: "抱え込みすぎる, 疲れを後回し",
+    description: "支え役を引き受けすぎた時は、休む予定を先に確保すると整う",
+  },
+  {
+    id: "napolitan",
+    title: "ナポリタンタイプ",
+    sub: "親しみやすい現実派。空気を明るくして進められる",
+    primaryAxis: "rich",
+    secondaryAxis: "light",
+    keywords: "愛嬌, 雰囲気作り, 実務",
+    strength: "人を和ませる, 進行役に強い",
+    caution: "無理して元気を出しがち",
+    description: "元気を演じない日を作ると、持ち味が長持ちする",
+  },
+  {
+    id: "genovese",
+    title: "ジェノベーゼタイプ",
+    sub: "爽やかで軽いのに芯がある。自己管理が武器",
+    primaryAxis: "light",
+    secondaryAxis: "calm",
+    keywords: "透明感, 回復力, 自己管理",
+    strength: "整える, リセットが速い",
+    caution: "合わない場で消耗しやすい",
+    description: "合わない環境は静かに離れるほど運が戻る",
+  },
+  {
+    id: "vongole",
+    title: "ボンゴレタイプ",
+    sub: "繊細で調整が上手い。小さな違和感にすぐ気づく",
+    primaryAxis: "light",
+    secondaryAxis: "spicy",
+    keywords: "観察, 調整, 余白",
+    strength: "人の特徴を掴む, 形にする",
+    caution: "気を使いすぎて疲れる",
+    description: "優しさを配る前に自分へ配ると、全体がうまく回る",
+  },
+  {
+    id: "peperoncino",
+    title: "ペペロンチーノタイプ",
+    sub: "シンプルで切れ味が良い。直感で正解へ寄せる",
+    primaryAxis: "spicy",
+    secondaryAxis: "light",
+    keywords: "瞬発力, 直感, 切り替え",
+    strength: "迷いを断つ, スタートが速い",
+    caution: "飽きやすい, 説明不足になりがち",
+    description: "言語化を一手間足すと、評価が一段上がる",
+  },
+  {
+    id: "arrabbiata",
+    title: "アラビアータタイプ",
+    sub: "熱くて早い。情熱で突破して道を作る",
+    primaryAxis: "spicy",
+    secondaryAxis: "rich",
+    keywords: "情熱, 勝負勘, 推進力",
+    strength: "突破力, 周囲を巻き込む",
+    caution: "熱が入りすぎると周りが見えない",
+    description: "休息を予定化すると、火力が安定して長期戦でも勝てる",
+  },
+  {
+    id: "bolognese",
+    title: "ボロネーゼタイプ",
+    sub: "堅実で積み上げが強い。最後に強い信頼型",
+    primaryAxis: "calm",
+    secondaryAxis: "rich",
+    keywords: "継続, 計画性, 信頼",
+    strength: "コツコツ積む, 崩れにくい",
+    caution: "変化に慎重すぎることがある",
+    description: "必要な変化だけ自分で選ぶと、人生が一段ラクになる",
+  },
+  {
+    id: "cacioepepe",
+    title: "カチョエペペタイプ",
+    sub: "静かに尖る合理派。理屈とセンスで整える",
+    primaryAxis: "calm",
+    secondaryAxis: "light",
+    keywords: "合理性, 美学, 冷静",
+    strength: "判断が速い, ブレない",
+    caution: "正しさで人を刺しがち",
+    description: "伝え方を丸くすると、強さがそのまま魅力になる",
+  },
+];
+
+let state = {
+  index: 0,
+  answers: Array(QUESTIONS.length).fill(null),
+};
+
+const els = {
+  startView: document.getElementById("startView"),
+  quizView: document.getElementById("quizView"),
+  resultView: document.getElementById("resultView"),
+  startBtn: document.getElementById("startBtn"),
+  resumeBtn: document.getElementById("resumeBtn"),
+  resetBtn: document.getElementById("resetBtn"),
+  restartBtn: document.getElementById("restartBtn"),
+  copyBtn: document.getElementById("copyBtn"),
+  copyHint: document.getElementById("copyHint"),
+
+  qCount: document.getElementById("qCount"),
+  stepText: document.getElementById("stepText"),
+  progressFill: document.getElementById("progressFill"),
+  qNumber: document.getElementById("qNumber"),
+  qText: document.getElementById("qText"),
+  choices: document.getElementById("choices"),
+  backBtn: document.getElementById("backBtn"),
+  nextBtn: document.getElementById("nextBtn"),
+
+  resultTitle: document.getElementById("resultTitle"),
+  resultSub: document.getElementById("resultSub"),
+  keywords: document.getElementById("keywords"),
+  strength: document.getElementById("strength"),
+  caution: document.getElementById("caution"),
+  description: document.getElementById("description"),
+  bars: document.getElementById("bars"),
+};
+
+function clamp(n,a,b){ return Math.max(a, Math.min(b, n)); }
+
+function saveState(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+}
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return false;
+    const obj = JSON.parse(raw);
+    if(!obj || !Array.isArray(obj.answers)) return false;
+    if(obj.answers.length !== QUESTIONS.length) return false;
+    state = {
+      index: clamp(Number(obj.index ?? 0), 0, QUESTIONS.length - 1),
+      answers: obj.answers.map(v => (v == null ? null : clamp(Number(v), 1, 5))),
+    };
+    return true;
+  }catch(e){
+    return false;
+  }
+}
+function clearState(){
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+  state = { index: 0, answers: Array(QUESTIONS.length).fill(null) };
+}
+
+function show(view){
+  els.startView.hidden  = view !== "start";
+  els.quizView.hidden   = view !== "quiz";
+  els.resultView.hidden = view !== "result";
+}
+
+function updateStart(){
+  els.qCount.textContent = QUESTIONS.length + "問";
+  const hasProgress = state.answers.some(v => v != null);
+  els.resumeBtn.hidden = !hasProgress;
+}
+
+function renderChoices(){
+  els.choices.innerHTML = "";
+  const selected = state.answers[state.index];
+
+  for(const c of CHOICES){
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "choice" + (selected === c.value ? " selected" : "");
+    btn.innerHTML = '<div class="label">' + c.label + '</div><div class="chip">' + c.value + "</div>";
+    btn.addEventListener("click", () => {
+      state.answers[state.index] = c.value;
+      saveState();
+      renderQuiz();
+    });
+    els.choices.appendChild(btn);
+  }
+}
+
+function canGoNext(){
+  return state.answers[state.index] != null;
+}
+
+function renderQuiz(){
+  const total = QUESTIONS.length;
+  const i = state.index;
+
+  els.stepText.textContent = (i + 1) + " / " + total;
+  els.progressFill.style.width = (((i + 1) / total) * 100) + "%";
+  els.qNumber.textContent = String(i + 1);
+  els.qText.textContent = QUESTIONS[i].text;
+
+  renderChoices();
+
+  els.backBtn.disabled = i === 0;
+  els.nextBtn.disabled = !canGoNext();
+  els.nextBtn.textContent = (i === total - 1) ? "結果へ" : "次へ";
+}
+
+function computeScores(){
+  const scores = Object.fromEntries(AXES.map(a => [a.id, 0]));
+  let answered = 0;
+
+  for(let i=0;i<QUESTIONS.length;i++){
+    const ans = state.answers[i];
+    if(ans == null) continue;
+    answered += 1;
+
+    const axis = QUESTIONS[i].axis;
+    const add = (ans - 3) * 12 + 50; // 1->26 3->50 5->74
+    scores[axis] += add;
+  }
+
+  if(answered === 0) answered = 1;
+
+  for(const k in scores){
+    scores[k] = Math.round(scores[k] / answered);
+    scores[k] = clamp(scores[k], 0, 100);
+  }
+  return scores;
+}
+
+function pickResult(scores){
+  const sorted = [...RESULTS].sort((a,b) => {
+    const ap = scores[a.primaryAxis] ?? 0;
+    const bp = scores[b.primaryAxis] ?? 0;
+    if(bp !== ap) return bp - ap;
+    const as = scores[a.secondaryAxis] ?? 0;
+    const bs = scores[b.secondaryAxis] ?? 0;
+    return bs - as;
+  });
+  return sorted[0];
+}
+
+function renderBars(scores){
+  els.bars.innerHTML = "";
+  for(const ax of AXES){
+    const v = clamp(scores[ax.id] ?? 0, 0, 100);
+    const row = document.createElement("div");
+    row.className = "barRow";
+    row.innerHTML =
+      '<div class="barName">' + ax.name + '</div>' +
+      '<div class="barTrack"><div class="barFill" style="width:' + v + '%"></div></div>' +
+      '<div class="barVal">' + v + "</div>";
+    els.bars.appendChild(row);
+  }
+}
+
+function showResult(){
+  if(state.answers.some(v => v == null)){
+    show("quiz");
+    renderQuiz();
+    return;
+  }
+
+  const scores = computeScores();
+  const result = pickResult(scores);
+
+  els.resultTitle.textContent = result.title;
+  els.resultSub.textContent = result.sub;
+  els.keywords.textContent = result.keywords;
+  els.strength.textContent = result.strength;
+  els.caution.textContent = result.caution;
+  els.description.textContent = result.description;
+
+  renderBars(scores);
+  show("result");
+
+  const url = new URL(location.href);
+  url.searchParams.set("result", result.id);
+  history.replaceState(null, "", url.toString());
+}
+
+function startNew(){
+  clearState();
+  saveState();
+  show("quiz");
+  renderQuiz();
+}
+
+function resume(){
+  show("quiz");
+  renderQuiz();
+}
+
+function resetAll(){
+  clearState();
+  saveState();
+  const url = new URL(location.href);
+  url.searchParams.delete("result");
+  history.replaceState(null, "", url.toString());
+  show("start");
+  updateStart();
+}
+
+async function copyLink(){
+  const url = location.href;
+  try{
+    await navigator.clipboard.writeText(url);
+    els.copyHint.textContent = "リンクをコピーしました";
+    setTimeout(() => (els.copyHint.textContent = "リンクは同じ端末内なら結果を直接表示できます"), 1800);
+  }catch(e){
+    prompt("このリンクをコピーしてください", url);
+  }
+}
+
+function maybeOpenFromUrl(){
+  const url = new URL(location.href);
+  const rid = url.searchParams.get("result");
+  if(!rid) return false;
+
+  const found = RESULTS.find(r => r.id === rid);
+  if(!found) return false;
+
+  els.resultTitle.textContent = found.title;
+  els.resultSub.textContent = found.sub;
+  els.keywords.textContent = found.keywords;
+  els.strength.textContent = found.strength;
+  els.caution.textContent = found.caution;
+  els.description.textContent = found.description;
+  renderBars({ rich: 50, light: 50, spicy: 50, calm: 50 });
+  show("result");
+  return true;
+}
+
+// events
+els.startBtn.addEventListener("click", startNew);
+els.resumeBtn.addEventListener("click", resume);
+els.resetBtn.addEventListener("click", resetAll);
+els.restartBtn.addEventListener("click", startNew);
+els.copyBtn.addEventListener("click", copyLink);
+
+els.backBtn.addEventListener("click", () => {
+  state.index = clamp(state.index - 1, 0, QUESTIONS.length - 1);
+  saveState();
+  renderQuiz();
+});
+
+els.nextBtn.addEventListener("click", () => {
+  if(!canGoNext()) return;
+
+  if(state.index === QUESTIONS.length - 1){
+    saveState();
+    showResult();
+    return;
+  }
+  state.index = clamp(state.index + 1, 0, QUESTIONS.length - 1);
+  saveState();
+  renderQuiz();
+});
+
+// init
+(function init(){
+  loadState();
+  updateStart();
+
+  if(maybeOpenFromUrl()) return;
+
+  show("start");
+})();
+</script>
+</body>
+</html>
